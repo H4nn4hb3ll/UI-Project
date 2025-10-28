@@ -1,0 +1,165 @@
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    height: 100%;
+    font-family: Inter, sans-serif;
+    background-color: #282D35;
+    color: white;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: blue;
+}
+
+nav > #title {
+    align-items: end;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+nav > #navigation {
+    margin-left: auto;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+#navigation > a{
+    padding: .2rem;
+}
+
+#sectionBox{
+    display: grid;
+    padding-top: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(1rem, 1fr);
+    text-align: center;
+    justify-content: center;
+}
+
+#sectionBox .sectionSelector{
+    flex-shrink: 1;
+    padding: 2%;
+    border: 2px solid black;
+}
+
+#submissionSelector {
+    display: block;
+    margin: auto;
+    width: fit-content;
+    justify-content: center;
+    padding-bottom: 2rem;
+    border: 2px solid black;
+    margin-bottom: 2rem;
+}
+
+.Page{
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 30rem 30rem;
+}
+
+.Page > div{
+    margin: 1rem;
+    text-align: left;
+}
+
+.Page input[type="text"],
+.Page input[type="email"],
+.Page input[type="number"],
+.Page textarea,
+.Page select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#dailyAvailability {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    font-size: 0.9rem;
+}
+
+#dailyAvailability label {
+    display: grid;
+    grid-template-columns: 2rem auto;
+    gap: 0.3rem;
+    border: 1px solid whitesmoke;
+    padding: 0.4rem 0.6rem;
+    border-radius: 3px;
+    width: 100%;
+    background-color: transparent;
+}
+
+.timeField {
+    display: grid;
+    grid-column: span 2;
+    gap: 0.2rem;
+}
+
+.timeField label {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.timeField input[type="number"] {
+    width: 100%;
+    padding: 0.2rem;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+}
+
+.elementPage{
+    width: 100%;
+}
+
+.elementPage .element{
+    display: block;
+    margin-bottom: 2rem;
+    width: 50%;
+    border: 1px solid whitesmoke;
+    padding: .2rem;
+}
+
+.elementPage input[type="text"] {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+.RadioContainer{
+    display:grid;
+    grid-template-columns: auto;
+}
+
+.navigationElement{
+    display: flex;
+    width: 100%;
+    height: 6rem;
+    padding: 2rem;
+    justify-content: center;
+}
+
+.navigationElement div{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.SubmitPage{
+    width: 30%;
+    margin: auto;
+    justify-content: center;
+    text-align: center;
+}
