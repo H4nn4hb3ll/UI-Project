@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import DocumentPage from "./PageSections/Page0.jsx"
 import Personalinfo from "./PageSections/Page1.jsx"
 import Application from "./PageSections/Page2.jsx"
@@ -23,42 +23,47 @@ export default function Page(){
     const [vetState, setVetState] = useState("")
     const [errors, setErrors] = useState(new Array(9).fill(false));
     const selector = useRef([]);
-
-    //need states for personal info, and application, still need disabilities and veteran status
-    //need to hook up the verification to the page
-    const Section = [() => <Personalinfo data={personal} saveList={setPersonal}/>, 
-                    () => <Application data={app} saveList={setApp}/>, 
-                    () => <EmploymentHistory data={emphistory} saveList={setEmpHistory} />, 
-                    () => <Education data={eduHistoty} saveList={setEduHistory}/>, 
-                    () => <References data={refs} saveList={setRefs}/>, 
-                    () => <EmergencyContacts data = {emgs} saveList={setEmgs}/>, 
-                    () => <DisabilitiesDeclaration data = {disState} saveList={setDisState}/>, 
-                    () => <VeteranStatus data = {vetState} saveList={setVetState}/>, 
-                    () => <AckSubmit errors={errors}/>]
+    const Section = useMemo(() => [
+        <Personalinfo data={personal} saveList={setPersonal} setRef={el => pageRef.current = el} />,
+        <Application data={app} saveList={setApp} setRef={el => pageRef.current = el} />,
+        <EmploymentHistory data={emphistory} saveList={setEmpHistory} setRef={el => pageRef.current = el} />,
+        <Education data={eduHistoty} saveList={setEduHistory} setRef={el => pageRef.current = el} />,
+        <References data={refs} saveList={setRefs} setRef={el => pageRef.current = el} />,
+        <EmergencyContacts data={emgs} saveList={setEmgs} setRef={el => pageRef.current = el} />,
+        <DisabilitiesDeclaration data={disState} saveList={setDisState} setRef={el => pageRef.current = el} />,
+        <VeteranStatus data={vetState} saveList={setVetState} setRef={el => pageRef.current = el} />,
+        <AckSubmit errors={errors} setRef={el => pageRef.current = el} />
+    ], [personal, app, emphistory, eduHistoty, refs, emgs, disState, vetState, errors]);
     const [pageState, setPage] = useState(0);
     const CurrentSection = Section[pageState];
+    const pageRef = useRef(null)
 
-    
     let adv = () => {
         if(pageState >= 9){
             alert("page submitted")
         } else {
-            if(!validateForm(pageState)){
-                let hasErrors = validateForm(pageState);
+            let hasErrors = validateForm(pageRef.current);
+            if(!hasErrors){
 
                 if (selector.current[pageState]) {
                     selector.current[pageState].style.color = hasErrors ? "red" : "black";
                 }
+
+                // update errors array for current page
+                setErrors(prev => {
+                    const newErrors = [...prev];
+                    newErrors[pageState] = hasErrors;
+                    return newErrors;
+                });
 
                 let newPage = pageState + 1;
                 setPage(newPage);
             } else {
-                let hasErrors = validateForm(pageState);
-
                 if (selector.current[pageState]) {
                     selector.current[pageState].style.color = hasErrors ? "red" : "black";
                 }
 
+                // update errors array for current page
                 setErrors(prev => {
                     const newErrors = [...prev];
                     newErrors[pageState] = hasErrors;
@@ -70,22 +75,41 @@ export default function Page(){
 
     let back = () => {
         if(pageState <= 0){
-            alert("Too far back")
+            alert("page submitted")
         } else {
-            let hasErrors = validateForm(pageState);
+            let hasErrors = validateForm(pageRef.current);
+            if(!hasErrors){
 
-            if (selector.current[pageState]) {
-                selector.current[pageState].style.color = hasErrors ? "red" : "black";
-            
+                if (selector.current[pageState]) {
+                    selector.current[pageState].style.color = hasErrors ? "red" : "black";
+                }
+
+                // update errors array for current page
+                setErrors(prev => {
+                    const newErrors = [...prev];
+                    newErrors[pageState] = hasErrors;
+                    return newErrors;
+                });
+
+                let newPage = pageState - 1;
+                setPage(newPage);
+            } else {
+                if (selector.current[pageState]) {
+                    selector.current[pageState].style.color = hasErrors ? "red" : "black";
+                }
+
+                // update errors array for current page
+                setErrors(prev => {
+                    const newErrors = [...prev];
+                    newErrors[pageState] = hasErrors;
+                    return newErrors;
+                });
             }
-            let newPage = pageState - 1;
-            setPage(newPage);
         }
     }
 
     let handleNav= (page) => {
-        let prevPage = pageState
-        let hasErrors = validateForm(pageState);
+        let hasErrors = validateForm(pageRef.current);
         if (selector.current[pageState]) {
             selector.current[pageState].style.color = hasErrors ? "red" : "black";
         }
@@ -98,12 +122,13 @@ export default function Page(){
         });
 
         setPage(page)
+        validateForm(pageRef.current)
     }
 
     return(
         <>
             <SectionSelector  handler = {handleNav} selector={selector}/>
-            <CurrentSection />
+            {CurrentSection}
             <div className="navigationElement">
                 <div>
                     {(pageState > 0) ? <button onClick={back}>Previous</button> : <div></div>}

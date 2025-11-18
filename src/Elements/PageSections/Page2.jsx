@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export default function Application({saveList, data}){
+export default function Application({saveList, data, setRef}){
 
     let minDate = new Date();
     let maxDate = new Date(minDate)
@@ -33,55 +33,44 @@ export default function Application({saveList, data}){
         desiredWeeklyHours: ""
 
     })
+    const appStateRef = useRef(appState)
 
+    //update the ref when the list changes
     useEffect(() => {
-        if(appState.startDate !== data.startDate ||
-        appState.employmentType !== data.employmentType ||
-        appState.desiredSalary !== data.desiredSalary ||
-        appState.sun !== data.sun ||
-        appState.sundayStart !== data.sundayStart ||
-        appState.sundayEnd !== data.sundayEnd ||
+        appStateRef.current = appState;
+    }, [appState]);
 
-        appState.mon !== data.mon ||
-        appState.mondayStart !== data.mondayStart ||
-        appState.mondayEnd !== data.mondayEnd ||
-        
-        appState.tues !== data.tues ||
-        appState.tuesdayStart !== data.tuesdayStart ||
-        appState.tuesdayEnd !== data.tuesdayEnd ||
+    //send the ref up on unmount
+    useEffect(() => {
+        return () => {
+            saveList(appStateRef.current);
+        }
+    }, []);
 
-        appState.wed !== data.wed ||
-        appState.wednesdayStart !== data.wednesdayStart ||
-        appState.wednesdayEnd !== data.wednesdayEnd ||
+    //send the ref up on mount
+    useEffect(() => {
+        saveList(appStateRef.current);
+    }, []);
 
-        appState.thurs !== data.thurs ||
-        appState.thursdayStart !== data.thursdayStart ||
-        appState.thursdayEnd !== data.thursdayEnd ||
-    
-        appState.fri !== data.fri ||
-        appState.fridayStart !== data.fridayStart ||
-        appState.fridayEnd !== data.fridayEnd ||
-    
-        appState.sat !== data.sat ||
-        appState.satdayStart !== data.satdayStart ||
-        appState.satdayEnd !== data.satdayEnd ||
-        appState.desiredWeeklyHours !== data.desiredWeeklyHours){
-            saveList(appState)
-        };
-    }, [appState, saveList]);
+    //make the container ref on mount
+    const containerRef = useRef(null);
+    useEffect(() => {
+        if (setRef) setRef(containerRef.current);
+    }, []);
     
     maxDate.setMonth(minDate.getMonth() + 1)
+    const today = new Date().toISOString().split("T")[0];
 
     return(
-        <>
-        <div className="Page">
+        <div ref={containerRef}>
+            <div className="Page">
         
             <div>
 				<div>
 					<label htmlFor = "StartDate">When can you start working for us?</label>
 				</div>
 				<input type = "date" name = "StartDate" id = "StartDate" 
-                    min={(new Date())}
+                    min={today}
                     onChange={(e) => setAppState((prev) => ({...prev, startDate: e.target.value}))}
                     defaultValue={data.startDate}
                     required>
@@ -112,7 +101,7 @@ export default function Application({saveList, data}){
 					<label htmlFor = "DesiredSalary">Desired Salary (usd)</label>
 				</div>
 				<input type = "number" name = "DesiredSalary" id = "DesiredSalary" 
-                    min={0} max={999999}
+                    min={0} max={9999999}
                     onBlur={(e) => setAppState((prev) => ({...prev, desiredSalary: Number(e.target.value)}))}
                     defaultValue={data.desiredSalary}
                     required>
@@ -127,14 +116,21 @@ export default function Application({saveList, data}){
 				</div>
 				<input type = "number" name = "DesiredWeeklyHours" id = "DesiredWeeklyHours" 
                     min={0} max={40}
-                    onBlur={(e) => setAppState((prev) => ({...prev, desiredWeeklyHours: Number(e.target.value)}))}
+                    onBlur={(e) => {
+                        let value = Number(e.target.value);
+                        if (value < 0) value = 0;
+                        if (value > 40) value = 40;
+                        e.target.value = value;
+
+                        setAppState((prev) => ({...prev, desiredWeeklyHours: Number(e.target.value)}))
+                    }}
                     defaultValue={data.desiredWeeklyHours} 
                     required>
                 </input>
 			</div>
 
-        </div>
-        <div id = "dailyAvailability">
+            </div>
+            <div id = "dailyAvailability">
 				<h3>Days Available</h3>
 
                 <div>
@@ -293,6 +289,6 @@ export default function Application({saveList, data}){
                     </label>
                 </div>
 			</div>
-        </>
+        </div>
     )
 }

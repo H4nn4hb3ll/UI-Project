@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {validateZip, validatePhone, validateEmail} from "../../Validator.js"
 
 export default function EmergencyBlock({data, updater, _class}){
     const [name, setName] = useState(data.name || "")
@@ -90,18 +91,46 @@ export default function EmergencyBlock({data, updater, _class}){
                     <option value="WY">Wyoming</option>
                 </select>
 			</div>
+
             <div>
 				<div>
 					<label htmlFor = "Zip">Zip Code</label>
 				</div>
-				<input type = "text" name = "Zip"  placeholder = "12345" id = "Zip" onBlur={(e) => setZip(e.target.value)} defaultValue={data.zip} required></input>
+				<input type = "text" name = "Zip"  id = "Zip" placeholder = "12345" required
+                    value={zip}
+                    onChange={(e) =>
+                        setZip(e.target.value)
+                    }
+                    onBlur={(e) => {
+                        if (!validateZip(zip)) {
+                            e.target.style.backgroundColor = "red";
+                        } else {
+                            e.target.style.backgroundColor = "white";
+                        }
+                    }}>
+                </input>
 			</div>
+
             <div>
-                <div>
-                    <label htmlFor = "Phone">Phone Number</label>
-                </div>
-                <input type = "text" name = "Phone" id = "Phone" onBlur={(e) => setPhone(e.target.value)} defaultValue={data.phone}></input>
-            </div>
+				<div>
+					<label htmlFor = "Phone">Phone #</label>
+				</div>
+				<input type = "text" name = "Phone" placeholder = "123-456-7890" id = "Phone" required
+                    value={phone}
+                    onChange={(e) =>
+                        setPhone(e.target.value)
+                    }
+                    onBlur={(e) => {
+                        const val = e.target.value;
+                        if (!validatePhone(val)) {
+                            e.target.style.backgroundColor = "red";
+                        } else {
+                            e.target.style.backgroundColor = "white";
+                        }
+                    }}>
+                </input>
+			</div>
+
             <div>
                 <div>
                     <label htmlFor = "Relation">Relationship</label>

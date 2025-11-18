@@ -163,3 +163,8 @@ nav > #navigation {
     justify-content: center;
     text-align: center;
 }
+
+input[data-error="true"] {
+    background-color: red;
+    border-color: red;
+}

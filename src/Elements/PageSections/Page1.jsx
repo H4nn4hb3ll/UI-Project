@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import {validateZip, validatePhone, validateEmail} from "../../Validator.js"
 
-export default function Personalinfo({saveList, data}){
-    
+export default function Personalinfo({saveList, data, setRef}){
+
     const [personalState, setPersonalState] = useState(data || {
         firstName: "",
         middleName: "",
@@ -14,31 +15,55 @@ export default function Personalinfo({saveList, data}){
         eightteen: "",
         maritalStatus: ""
     })
+    const personalStateRef = useRef(personalState);
+    const [first, setFirst] = useState (data.firstName || "")
+    const [mid, setMid] = useState (data.middleName || "")
+    const [last, setLast] = useState (data.lastName || "")
+    const [add, setAdd] = useState (data.address || "")
+    const [state, setState] = useState (data.state || "")
+    const [zip, setZip] = useState (data.zip || "")
+    const [phone, setPhone] = useState (data.phone || "")
+    const [email, setEmail] = useState (data.email || "")
+    const [eight, setEight] = useState (data.eightteen || "")
+    const [marital, setMarital] = useState (data.maritalStatus || "")
 
     useEffect(() => {
-        if(personalState.firstName !== data.firstName ||
-        personalState.middleName !== data.middleName ||
-        personalState.lastName !== data.lastName ||
-        personalState.address !== data.address ||
-        personalState.state !== data.state ||
-        personalState.zip !== data.zip ||
-        personalState.phone !== data.phone ||
-        personalState.email !== data.email ||
-        personalState.eightteen !== data.eightteen ||
-        personalState.maritalStatus !== data.maritalStatus){
-            saveList(personalState)
-        };
-    }, [personalState, saveList]);
+        personalStateRef.current = personalState;
+    }, [personalState]);
+
+    const containerRef = useRef(null);
+    useEffect(() => {
+        if (setRef) setRef(containerRef.current);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            let latest = personalStateRef.current
+            saveList(latest);
+        }
+    }, []);
+
+    useEffect(() => {
+        let latest = personalStateRef.current
+        saveList(latest);
+    }, []);
+
+
 
     return(
-        <div className="Page">
+        <div className="Page" ref={containerRef}>
 			<div>
 				<div>
 					<label htmlFor = "FirstName">First Name</label>
 				</div>
 				<input type = "text" name = "FirstName" 
-                    onBlur={(e)=>setPersonalState((prev) => ({...prev, firstName: e.target.value}))}
-                    defaultValue={data.firstName} 
+                    onBlur={(e)=>{
+                        setPersonalState(prev => ({...prev, firstName: e.target.value}))
+                    }}
+                    value={first}
+                    onChange={(e) =>
+                        setFirst(e.target.value)
+                    } 
                     required>
                 </input>
 			</div>
@@ -49,7 +74,10 @@ export default function Personalinfo({saveList, data}){
 				</div>
 				<input type = "text" name = "MiddleName"
                     onBlur={(e)=>setPersonalState((prev)=>({...prev, middleName: e.target.value}))}
-                    defaultValue={data.middleName}>
+                    value={mid}
+                    onChange={(e) =>
+                        setMid(e.target.value)
+                    }>
                 </input>
 			</div>
 			
@@ -59,7 +87,10 @@ export default function Personalinfo({saveList, data}){
 				</div>
 				<input type = "text" name = "LastName"
                     onBlur={(e)=>setPersonalState((prev)=>({...prev, lastName: e.target.value}))}
-                    defaultValue={data.lastName}>
+                    value={last}
+                    onChange={(e) =>
+                        setLast(e.target.value)
+                    } >
                 </input>
 			</div>
 			
@@ -69,7 +100,10 @@ export default function Personalinfo({saveList, data}){
 				</div>
 				<input type = "text" name = "Address"  required
                     onBlur={(e)=>setPersonalState((prev)=>({...prev, address: e.target.value}))}
-                    defaultValue={data.address}>    
+                    value={add}
+                    onChange={(e) =>
+                        setAdd(e.target.value)
+                    }>    
                 </input>
 			</div>
 
@@ -78,7 +112,9 @@ export default function Personalinfo({saveList, data}){
 					<label htmlFor = "State">State</label>
 				</div>
 				<select name="State"
-                    onChange={e=>setPersonalState((prev)=>({...prev, state:e.target.value}))}>
+                    onChange={e=>setPersonalState((prev)=>({...prev, state:e.target.value}))}
+                    value={state}
+                >
                     <option value="" defaultValue="selected">Select a State</option>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
@@ -139,8 +175,18 @@ export default function Personalinfo({saveList, data}){
 					<label htmlFor = "Zip">Zip Code</label>
 				</div>
 				<input type = "text" name = "Zip"  id = "Zip" placeholder = "12345" required
-                    onBlur={(e)=>setPersonalState((prev)=>({...prev, zip: e.target.value}))}
-                    defaultValue={data.zip}>
+                    value={zip}
+                    onChange={(e) =>
+                        setZip(e.target.value)
+                    }
+                    onBlur={(e) => {
+                        setPersonalState(prev => ({ ...prev, zip: e.target.value }))
+                        if (!validateZip(zip)) {
+                            e.target.style.backgroundColor = "red";
+                        } else {
+                            e.target.style.backgroundColor = "white";
+                        }
+                    }}>
                 </input>
 			</div>
 			
@@ -149,8 +195,19 @@ export default function Personalinfo({saveList, data}){
 					<label htmlFor = "Phone">Phone #</label>
 				</div>
 				<input type = "text" name = "Phone" placeholder = "123-456-7890" id = "Phone" required
-                    onBlur={(e)=>setPersonalState((prev)=>({...prev, phone: e.target.value}))}
-                    defaultValue={data.phone}>
+                    value={phone}
+                    onChange={(e) =>
+                        setPhone(e.target.value)
+                    }
+                    onBlur={(e) => {
+                        const val = e.target.value;
+                        setPersonalState(prev => ({ ...prev, phone: val }))
+                        if (!validatePhone(val)) {
+                            e.target.style.backgroundColor = "red";
+                        } else {
+                            e.target.style.backgroundColor = "white";
+                        }
+                    }}>
                 </input>
 			</div>
 
@@ -159,8 +216,19 @@ export default function Personalinfo({saveList, data}){
 					<label htmlFor = "Email">Email Address</label>
 				</div>
 				<input type = "text" name = "Email" placeholder = "johndoe@gmail.com" id = "Email" required
-                    onBlur={(e)=>setPersonalState((prev)=>({...prev, email: e.target.value}))}
-                    defaultValue={data.email}>
+                    value={email}
+                    onChange={(e) =>
+                        setEmail(e.target.value)
+                    }
+                    onBlur={(e) => {
+                        const val = e.target.value;
+                        setPersonalState(prev => ({ ...prev, email: val }))
+                        if (!validateEmail(val)) {
+                            e.target.style.backgroundColor = "red";
+                        } else {
+                            e.target.style.backgroundColor = "white";
+                        }
+                    }}>
                 </input>
 			</div>
 

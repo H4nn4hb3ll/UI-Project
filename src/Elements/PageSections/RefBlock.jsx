@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {validateZip, validatePhone, validateEmail} from "../../Validator.js"
 
 export default function RefBlock({data, updater, _class}){
     const [name, setName] = useState(data.name || "")
@@ -27,19 +28,40 @@ export default function RefBlock({data, updater, _class}){
                 <div>
 					<label htmlFor = "Email">Email address</label>
 				</div>
-				<input type = "text" name = "Email" id = "Email" onBlur={(e) => setEmail(e.target.value)} defaultValue={data.email}></input>
+				<input type = "text" name = "Email" id = "Email" 
+                onBlur={(e) => {
+                    setEmail(e.target.value)
+                    if (!validateEmail(e.target.value)) {
+                        e.target.style.backgroundColor = "red";
+                    } else {
+                        e.target.style.backgroundColor = "white";
+                    }
+                }} 
+                defaultValue={data.email}
+                required></input>
             </div>
             <div>
                 <div>
 					<label htmlFor = "Phone">Phone Number</label>
 				</div>
-				<input type = "text" name = "Phone" id= "Phone" onBlur={(e) => setPhone(e.target.value)} defaultValue={data.phone}></input>
+				<input type = "text" name = "Phone" id= "Phone" 
+                onBlur={(e) => {
+                    setPhone(e.target.value)
+                    if (!validatePhone(e.target.value)) {
+                        e.target.style.backgroundColor = "red";
+                    } else {
+                        e.target.style.backgroundColor = "white";
+                    }
+                }} 
+                defaultValue={data.phone}
+                required
+                ></input>
             </div>
             <div>
                 <div>
 					<label htmlFor = "Relation">Relationship</label>
 				</div>
-				<input type = "text" name = "Relation" onBlur={(e) => setRel(e.target.value)} defaultValue={data.rel}></input>
+				<input type = "text" name = "Relation" onBlur={(e) => setRel(e.target.value)} defaultValue={data.rel} required></input>
             </div>
         </div>
     )

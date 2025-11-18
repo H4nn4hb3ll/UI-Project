@@ -3,6 +3,7 @@ export default function AckSubmit({errors}){
     let sub = () => {
         for(let i = 0; i < errors.length; i++){
             if(errors[i] == true){
+                console.log(errors)
                 alert("there are some errors in your form, please go back and fix them before you resubmit")
                 return
             }

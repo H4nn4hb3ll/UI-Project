@@ -7,14 +7,16 @@ export default function EmploymentBlock({updater, data, _class}){
     const [id, setID] = useState(data.id)
 
     useEffect(() => {
-        if (
-            name !== data.name ||
-            title !== data.title ||
-            responsibilities !== data.responsibilities
-        ) {
-            updater(id, name, title, responsibilities);
+        return () => {
+            if (
+                name !== data.name ||
+                title !== data.title ||
+                responsibilities !== data.responsibilities
+            ) {
+                updater(id, name, title, responsibilities);
+            }
         }
-    }, [id, name, title, responsibilities]);
+    }, []);
 
     return(
         <div className={_class}>

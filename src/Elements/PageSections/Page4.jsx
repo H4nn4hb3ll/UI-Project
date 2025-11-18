@@ -1,8 +1,9 @@
 import EducationBlock from "./EducationBlock"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
-export default function Education({saveList, data}){
+export default function Education({saveList, data, setRef}){
     const [eduList, setEduList] = useState( data || [])
+    const eduListRef = useRef(eduList)
 
     const addChild = () => {
         setEduList(eduList.concat({id: Date.now(), type: "", name: "", start: "", end: ""}))
@@ -24,12 +25,31 @@ export default function Education({saveList, data}){
         setEduList((prev) => (prev.map((block) => block.id === id ? {id: id, type: type, name: name, start: start, end: end} : block)))
     }
 
+    //update the ref when the list changes
     useEffect(() => {
-            saveList(eduList);
-    }, [eduList, saveList]);
+        eduListRef.current = eduList;
+    }, [eduList]);
+
+    //send the ref up on unmount
+    useEffect(() => {
+        return () => {
+            saveList(eduListRef.current);
+        }
+    }, []);
+
+    //send the ref up on mount
+    useEffect(() => {
+        saveList(eduListRef.current);
+    }, []);
+
+    //make the container ref on mount
+    const containerRef = useRef(null);
+    useEffect(() => {
+        if (setRef) setRef(containerRef.current);
+    }, []);
 
     return(
-        <>
+        <div ref={containerRef}>
             <div className="elementHeader">
                 <h2>Please provide Education history</h2>
                 <button onClick={addChild}>+</button>
@@ -38,6 +58,6 @@ export default function Education({saveList, data}){
             <div className = "elementPage">
                 {AllBlocks}
             </div>
-        </>
+        </div>
     )
 }
