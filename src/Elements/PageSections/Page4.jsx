@@ -51,7 +51,7 @@ export default function Education({saveList, data, setRef}){
     return(
         <div ref={containerRef}>
             <div className="elementHeader">
-                <h2>Please provide Education history</h2>
+                <h2>Please provide education history</h2>
                 <button onClick={addChild}>+</button>
                 <button onClick={removeChild}>-</button>
             </div>
