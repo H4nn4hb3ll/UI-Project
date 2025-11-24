@@ -98,7 +98,7 @@ export default function Application({saveList, data, setRef}){
 
             <div>
 				<div>
-					<label htmlFor = "DesiredSalary">Desired Salary (usd)</label>
+					<label htmlFor = "DesiredSalary">Desired Salary yearly(usd)</label>
 				</div>
 				<input type = "number" name = "DesiredSalary" id = "DesiredSalary" 
                     min={0} max={9999999}
