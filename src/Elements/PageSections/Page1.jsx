@@ -111,8 +111,11 @@ export default function Personalinfo({saveList, data, setRef}){
 				<div>
 					<label htmlFor = "State">State</label>
 				</div>
-				<select name="State" required
-                    onChange={e=>setPersonalState((prev)=>({...prev, state:e.target.value}))}
+                <select name="State"
+                    onChange={e => {
+                        setState(e.target.value);
+                        setPersonalState((prev) => ({ ...prev, state: e.target.value }));
+                    }}
                     value={state}
                 >
                     <option value="" defaultValue="selected">Select a State</option>
