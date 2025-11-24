@@ -205,7 +205,7 @@ export default function Application({saveList, data, setRef}){
                             onChange={(e) => setAppState((prev) => ({...prev, wed: e.target.checked}))}
                             defaultChecked={appState.wed}>
                         </input>
-                        WednesDay
+                        Wednesday
                         <div className="timeField">
                             <label htmlFor="wednesdayStart">start</label>
                             <input type="number" 
