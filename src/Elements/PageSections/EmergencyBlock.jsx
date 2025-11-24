@@ -28,6 +28,12 @@ export default function EmergencyBlock({data, updater, _class}){
             </div>
             <div>
                 <div>
+                    <label htmlFor = "Name">Last Name</label>
+                </div>
+                <input type = "text" name = "lastName" onBlur={(e) => setLast(e.target.value)} defaultValue={data.lastName} required></input>
+            </div>
+            <div>
+                <div>
                     <label htmlFor = "Address">Address</label>
                 </div>
                 <input type = "text" name = "Address" onBlur={(e) => setAddress(e.target.value)} defaultValue={data.address}></input>
