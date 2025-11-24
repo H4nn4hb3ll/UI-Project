@@ -85,7 +85,7 @@ export default function Personalinfo({saveList, data, setRef}){
 				<div>
 					<label htmlFor = "LastName">Last Name</label>
 				</div>
-				<input type = "text" name = "LastName"
+				<input type = "text" name = "LastName" required
                     onBlur={(e)=>setPersonalState((prev)=>({...prev, lastName: e.target.value}))}
                     value={last}
                     onChange={(e) =>
@@ -111,7 +111,7 @@ export default function Personalinfo({saveList, data, setRef}){
 				<div>
 					<label htmlFor = "State">State</label>
 				</div>
-				<select name="State"
+				<select name="State" required
                     onChange={e=>setPersonalState((prev)=>({...prev, state:e.target.value}))}
                     value={state}
                 >
